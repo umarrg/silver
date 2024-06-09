@@ -1530,4 +1530,4 @@ async function initializeCopyTrading() {
         console.error(`Error initializing copy trading: ${err}`);
     }
 }
-// initializeCopyTrading().catch(console.error);
+initializeCopyTrading().catch(console.error);
