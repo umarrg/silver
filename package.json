@@ -1,0 +1,38 @@
+{
+  "name": "silver_sniper_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@jup-ag/api": "^6.0.22",
+    "@jup-ag/dca-sdk": "^2.3.5",
+    "@jup-ag/limit-order-sdk": "^0.1.10",
+    "@moralisweb3/evm-utils": "^2.23.1",
+    "@project-serum/anchor": "^0.26.0",
+    "@solana/spl-token": "^0.4.6",
+    "@solana/web3.js": "^1.91.8",
+    "@triton-one/yellowstone-grpc": "^0.4.0",
+    "axios": "^1.6.8",
+    "bigint-buffer": "^1.1.5",
+    "bn.js": "^5.2.1",
+    "bs58": "^5.0.0",
+    "cors": "^2.8.5",
+    "cross-fetch": "^4.0.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^5.4",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.0",
+    "moralis": "^2.23.1",
+    "node-telegram-bot-api": "^0.61.0",
+    "nodemon": "^2.0.20",
+    "web3": "^4.2.2"
+  }
+}
