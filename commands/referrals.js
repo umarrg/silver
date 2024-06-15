@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 
 function ReferralCommand(bot, chatId, username) {
     const message = `
-    <b>💰 Invite your friends to save 10% on fees. If you've traded more than $10k volume in a week you'll receive a 35% share of the fees paid by your referrees! Otherwise, you'll receive a 25% share.</b>
+    <b>💰 Invite your friends to recieve 15% of their trade fees</b>
 
 <b>Your Referrals (updated every 15 min)</b>
 • Users referred: 0 (direct: 0, indirect: 0)

@@ -85,68 +85,7 @@ bot.onText(/\/start/, async (msg, match) => {
         bot.sendMessage(msg.chat.id, 'No wallets found for this user. Please generate or import a wallet.');
     }
 });
-bot.onText(/\/new_pairs/, async (msg, match) => {
-    const message = `
-📈 TRUMP | Trumpwifhat (34s ago)
-86ndMZyZchZZVZG6TpvgmkMtKnM3ET7tvN3CD1aMExHw
-Renounced: ❌ | Not Rugged ✅
-Market Cap: $119.69K
-Liquidity: $239.02K | Locked: 0%
-LP: 99.97% | Creator: 0%
-Top 5: 0% | Top 20: 0%
 
-📈 ALBERT | Albert Sign  (30s ago)
-J26TNk1tfg5HqAw8EfJL6mnqL2m62xP7ePupQJbzpump
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $5.02K
-Liquidity: $10.13K | Locked: 0%
-LP: 97.55% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-
-📈 DRLISA | AMD CEO (29s ago)
-8Y8bPdS857wEFCy3CuCJ7LevvchhtQRGaF37Lpybpump
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $5.75K
-Liquidity: $10.81K | Locked: 0%
-LP: 88.94% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-🟢 LIVE Quick Buy: Achilles | Odysseus | Menelaus | Diomedes | Paris | Helenus | Hector
-
-📈 MUNALISA | YOUNG MUNALISA (29s ago)
-BT1aJ7aprrJsKSnNkqrhfXRX2tmitfuA4hEeRnDRHYNM
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $5.44K
-Liquidity: $10.53K | Locked: 0%
-LP: 93.25% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-🟢 LIVE Quick Buy: Achilles | Odysseus | Menelaus | Diomedes | Paris | Helenus | Hector
-
-📈 CHONKE | Chinese PONKE (17s ago)
-AbBF6HHDkoMWUKaw7YF3sLJNLsQKc6wE6vQydnBQpump
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $4.94K
-Liquidity: $10.05K | Locked: 0%
-LP: 97.61% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-🟢 LIVE Quick Buy: Achilles | Odysseus | Menelaus | Diomedes | Paris | Helenus | Hector
-`;
-
-    const options = {
-        reply_markup: {
-            inline_keyboard: [
-                [
-                    { text: 'Back', callback_data: 'back' },
-                    { text: 'Refresh', callback_data: 'refresh' }
-                ]
-            ]
-        },
-        parse_mode: 'HTML'
-    };
-
-    bot.sendMessage(chatId, message, options)
-        .then(() => console.log('Message sent successfully with buttons'))
-        .catch(err => console.error('Error sending message:', err));
-})
 
 bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
@@ -163,6 +102,7 @@ const userSetups = {};
 let orderData = {};
 let myObj = {};
 const userHistory = {};
+let userSettings = {};
 
 bot.on('callback_query', async (callbackQuery) => {
 
@@ -183,6 +123,7 @@ bot.on('callback_query', async (callbackQuery) => {
             slippage: '15%'
         };
     }
+
     const copyTradeSetup = userSetups[chatId];
     if (data === 'close_b') {
         await handleBackButton(chatId);
@@ -1189,66 +1130,154 @@ bot.on('callback_query', async (callbackQuery) => {
                 ]
             }
         });
-    } else if (data === 'new_pairs') {
-        const message = `
-📈 TRUMP | Trumpwifhat (34s ago)
-86ndMZyZchZZVZG6TpvgmkMtKnM3ET7tvN3CD1aMExHw
-Renounced: ❌ | Not Rugged ✅
-Market Cap: $119.69K
-Liquidity: $239.02K | Locked: 0%
-LP: 99.97% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-
-📈 ALBERT | Albert Sign  (30s ago)
-J26TNk1tfg5HqAw8EfJL6mnqL2m62xP7ePupQJbzpump
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $5.02K
-Liquidity: $10.13K | Locked: 0%
-LP: 97.55% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-
-📈 DRLISA | AMD CEO (29s ago)
-8Y8bPdS857wEFCy3CuCJ7LevvchhtQRGaF37Lpybpump
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $5.75K
-Liquidity: $10.81K | Locked: 0%
-LP: 88.94% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-
-📈 MUNALISA | YOUNG MUNALISA (29s ago)
-BT1aJ7aprrJsKSnNkqrhfXRX2tmitfuA4hEeRnDRHYNM
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $5.44K
-Liquidity: $10.53K | Locked: 0%
-LP: 93.25% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-
-📈 CHONKE | Chinese PONKE (17s ago)
-AbBF6HHDkoMWUKaw7YF3sLJNLsQKc6wE6vQydnBQpump
-Renounced: ✅ | Not Rugged ✅
-Market Cap: $4.94K
-Liquidity: $10.05K | Locked: 0%
-LP: 97.61% | Creator: 0%
-Top 5: 0% | Top 20: 0%
-`;
-
-        const options = {
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: 'Back', callback_data: 'back' },
-                        { text: 'Refresh', callback_data: 'refresh' }
-                    ]
-                ]
-            },
-            parse_mode: 'HTML'
+    }
+    if (!userSettings[chatId]) {
+        userSettings[chatId] = {
+            fast: false,
+            turbo: true,
+            customFee: '',
+            mevBuy: false,
+            mevSell: false,
+            autoBuy: false,
+            amounts: {
+                sol_0_5: '0.5 SOL',
+                sol_12: '12 SOL',
+                sol_3: '3 SOL',
+                sol_10: '10 SOL',
+                buySlippage: '15%',
+                sellP_2: '2%',
+                sellP_100: '100 SOL',
+                sellSlippage: '15%',
+            }
         };
+    }
 
-        bot.sendMessage(chatId, message, options)
-            .then(() => console.log('Message sent successfully with buttons'))
-            .catch(err => console.error('Error sending message:', err));
+    let settings = userSettings[chatId];
+
+    switch (data) {
+        case 'settings':
+            sendSettingsMenu(chatId);
+            break;
+
+        case 'fast':
+            settings.fast = true;
+            settings.turbo = false;
+            settings.customFee = '';
+            sendSettingsMenu(chatId);
+            break;
+
+        case 'turbo':
+            settings.fast = false;
+            settings.turbo = true;
+            settings.customFee = '';
+            sendSettingsMenu(chatId);
+            break;
+
+        case 'mev_buy':
+            settings.mevBuy = !settings.mevBuy;
+            sendSettingsMenu(chatId);
+            break;
+
+        case 'auto_buy':
+            settings.autoBuy = !settings.autoBuy;
+            sendSettingsMenu(chatId);
+            break;
+
+        case 'mev_sell':
+            settings.mevSell = !settings.mevSell;
+            sendSettingsMenu(chatId);
+            break;
+
+        case 'custom_fee':
+            bot.sendMessage(chatId, 'Please enter your custom fee:').then(() => {
+                bot.once('message', msg => {
+                    settings.fast = false;
+                    settings.turbo = false;
+                    settings.customFee = msg.text;
+                    sendSettingsMenu(chatId);
+                });
+            });
+            break;
+
+        default:
+            if (data.endsWith('✏️')) {
+                bot.sendMessage(chatId, 'Please enter the new amount:').then(() => {
+                    bot.once('message', msg => {
+                        let key = data.replace('✏️', '').trim().toLowerCase().replace(' ', '_');
+                        settings.amounts[key] = msg.text;
+                        sendSettingsMenu(chatId);
+                    });
+                });
+            }
+            break;
     }
 });
+function sendSettingsMenu(chatId) {
+    const settings = userSettings[chatId];
+    const content = `<b><u>💰Fee Discount</u></b>: You are receiving a 10% discount on trading fees for being a referral of another user.
+
+<b>FAQ</b>:
+
+🚀 <b>Fast/Turbo/Custom Fee</b>: Set your preferred priority fee to decrease the likelihood of failed transactions.
+
+🛡️<b>MEV Protection</b>:
+Enable this setting to send transactions privately and avoid getting frontrun or sandwiched.
+<u>Important Note</u>: If you enable MEV Protection your transactions may take longer to get confirmed.`;
+
+    const inline_keyboard = [
+        [
+            { text: '← Back', callback_data: 'backs' },
+        ],
+        [
+            { text: `${settings.fast ? '✅' : ''} Fast 🐴`, callback_data: 'fast' },
+            { text: `${settings.turbo ? '✅' : ''} Turbo 🚀`, callback_data: 'turbo' },
+            { text: `${settings.customFee ? `✅ Custom Fee (${settings.customFee})` : 'Custom Fee'}`, callback_data: 'custom_fee' },
+        ],
+        [
+            { text: `${settings.mevBuy ? '🟢' : ''} Mev Protect (Buys)`, callback_data: 'mev_buy' },
+            { text: `${settings.mevSell ? '🟢' : ''} Mev Protect (Sells)`, callback_data: 'mev_sell' },
+        ],
+        [
+            { text: `${settings.autoBuy ? '🟢' : '🔴'} Auto Buy`, callback_data: 'auto_buy' },
+        ],
+        [
+            { text: '-- Buy Amounts --', callback_data: 'buy_amounts' },
+        ],
+        [
+            { text: `${settings.amounts.sol_0_5} ✏️`, callback_data: 'sol_0.5 ✏️' },
+            { text: `${settings.amounts.sol_12} ✏️`, callback_data: 'sol_12 ✏️' },
+            { text: `${settings.amounts.sol_3} ✏️`, callback_data: 'sol_3 ✏️' },
+        ],
+        [
+            { text: `${settings.amounts.sol_10} ✏️`, callback_data: 'sol_10 ✏️' },
+        ],
+        [
+            { text: `Buy Slippage: ${settings.amounts.buySlippage} ✏️`, callback_data: 'buy_slippage ✏️' },
+        ],
+        [
+            { text: '-- Sell Amounts --', callback_data: 'sell_amounts' },
+        ],
+        [
+            { text: `${settings.amounts.sellP_2} ✏️`, callback_data: 'sellP_2 ✏️' },
+            { text: `${settings.amounts.sellP_100} ✏️`, callback_data: 'sellP_100 ✏️' },
+        ],
+        [
+            { text: `Sell Slippage: ${settings.amounts.sellSlippage} ✏️`, callback_data: 'sell_slippage ✏️' },
+        ],
+        [
+            { text: 'Show/Hide Token', callback_data: 'show_hide' },
+            { text: 'Wallets', callback_data: 'wallets' },
+        ],
+        [
+            { text: 'Advanced Mode ➜', callback_data: 'advanced_mode' },
+        ],
+    ];
+
+    bot.sendMessage(chatId, content, {
+        parse_mode: "HTML",
+        reply_markup: { inline_keyboard }
+    });
+}
 
 
 async function handleSellCommand(chatId, data) {
@@ -1383,35 +1412,6 @@ async function getTokenData(token) {
     }
 }
 
-async function getCoinGeckoData(coinGeckoId) {
-    const API_KEY = process.env.COINGECKO_KEY;
-    const BASE_URL = 'https://pro-api.coingecko.com/api/v3';
-
-    try {
-        const response = await axios.get(`${BASE_URL}/coins/${coinGeckoId}`, {
-            headers: {
-                'X-CG-Pro-API-Key': API_KEY
-            }
-        });
-        const data = response.data;
-
-
-        const tokenInfo = {
-            name: data.name,
-            symbol: data.symbol,
-            address: data.platforms.solana,
-            priceUsd: data.market_data.current_price.usd,
-            liquidityUsd: data.market_data.total_volume.usd,
-            marketCapUsd: data.market_data.market_cap.usd
-        };
-
-        console.log("r>>>>", tokenInfo)
-        return tokenInfo;
-    } catch (error) {
-        console.error('Error fetching CoinGecko data:', error);
-        return null;
-    }
-}
 
 async function getTokenPriceInUSD(tokenAddress) {
     const API_KEY = process.env.COINGECKO_KEY;;
