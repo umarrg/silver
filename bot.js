@@ -1048,6 +1048,29 @@ bot.on('callback_query', async (callbackQuery) => {
         });
     } else if (data === 'positions') {
         bot.sendMessage(chatId, "You do not have any tokens yet! Start trading in the Buy menu.")
+    } else if (data === 'wallets') {
+        const wallets = await getWalletbyUser(user._id);
+        if (wallets && wallets.length > 0) {
+            let account = wallets[0].address;
+
+            try {
+                const solBalance = await getSolBalance(account);
+                const solPriceInUSD = await getSolPriceInUSD();
+                const balanceInUSD = (solBalance * solPriceInUSD).toFixed(2);
+                let content = `<b>Solana</b>\n<code>${account}</code> (Tap to copy)\nBalance: <code>${solBalance.toFixed(4)} SOL ($${balanceInUSD})</code>`;
+
+                await bot.sendMessage(chatId, content, {
+                    parse_mode: "HTML",
+
+                });
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                bot.sendMessage(msg.chat.id, 'Sorry, there was an error fetching your balance. Please try again later.');
+            }
+        } else {
+            bot.sendMessage(msg.chat.id, 'No wallets found for this user. Please generate or import a wallet.');
+        }
+
     }
     else if (data === 'create-dca-order') {
         if (orderData.maxPrice && orderData.minPrice) {
@@ -1131,6 +1154,27 @@ bot.on('callback_query', async (callbackQuery) => {
             }
         });
     }
+    if (!userSettings[chatId]) {
+        userSettings[chatId] = {
+            fast: false,
+            turbo: true,
+            customFee: '',
+            mevBuy: false,
+            mevSell: false,
+            autoBuy: false,
+            amounts: {
+                sol_0_5: '0.5 SOL',
+                sol_12: '12 SOL',
+                sol_3: '3 SOL',
+                sol_10: '10 SOL',
+                buySlippage: '15%',
+                sellP_2: '2%',
+                sellP_100: '100 SOL',
+                sellSlippage: '15%',
+            }
+        };
+    }
+
     if (!userSettings[chatId]) {
         userSettings[chatId] = {
             fast: false,
@@ -1244,7 +1288,7 @@ Enable this setting to send transactions privately and avoid getting frontrun or
             { text: '-- Buy Amounts --', callback_data: 'buy_amounts' },
         ],
         [
-            { text: `${settings.amounts.sol_0_5} ✏️`, callback_data: 'sol_0.5 ✏️' },
+            { text: `${settings.amounts.sol_0_5} ✏️`, callback_data: 'sol_0_5 ✏️' },
             { text: `${settings.amounts.sol_12} ✏️`, callback_data: 'sol_12 ✏️' },
             { text: `${settings.amounts.sol_3} ✏️`, callback_data: 'sol_3 ✏️' },
         ],
@@ -1268,9 +1312,7 @@ Enable this setting to send transactions privately and avoid getting frontrun or
             { text: 'Show/Hide Token', callback_data: 'show_hide' },
             { text: 'Wallets', callback_data: 'wallets' },
         ],
-        [
-            { text: 'Advanced Mode ➜', callback_data: 'advanced_mode' },
-        ],
+
     ];
 
     bot.sendMessage(chatId, content, {
