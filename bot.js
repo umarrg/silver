@@ -82,6 +82,7 @@ Trade smart, earn big, and watch $SSS soar! 🌊🏄‍♂️\n\n`;
 
             await bot.sendMessage(msg.chat.id, content, {
                 parse_mode: "HTML",
+                disable_web_page_preview: true,
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: 'Buy', callback_data: 'buy' }, { text: 'Buy $SSS', callback_data: 'buy_$SSS' }, { text: 'Sell', callback_data: 'sell' }],
