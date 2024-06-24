@@ -59,10 +59,26 @@ bot.onText(/\/start/, async (msg, match) => {
         let account = wallets[0].address;
 
         try {
-            const solBalance = await getSolBalance(account);
-            const solPriceInUSD = await getSolPriceInUSD();
-            const balanceInUSD = (solBalance * solPriceInUSD).toFixed(2);
-            let content = `🌟 Welcome to the Silver Sniper Bot! 🚀 \n\nEmbark on your trading journey with the fastest and most reliable trading bot in the galaxy, powered by the native Silver Surfer Solana token. Experience lightning-fast transactions that let you beat anyone to the trade, ensuring you never miss a golden opportunity.\n\n🔗 Dive into the action and learn more at www.silversolana.surf.\n\n🌌 Join us and dominate the markets with unmatched speed and efficiency! 🏄‍♂️\n\n<b>Solana</b>\n<code>${account}</code> (Tap to copy)\nBalance: <code>${solBalance.toFixed(4)} SOL ($${balanceInUSD})</code>\n\nClick on the Refresh button to update your current balance.\n\n`;
+
+            let content = `🌟 Welcome to the Silver Sniper Bot! 🚀
+
+Meet the fastest bot on the Solana chain, powered by the $SSS token. 🌐 www.silversolana.surf
+
+Here’s why you should get excited:
+
+💰 Trade to Earn: Every time you make a trade, our bot uses trade fees to purchase $SSS tokens, either burning them or rewarding our token holders. This ensures a steady increase in $SSS value over time.
+
+📈 Daily Buys: The bot buys $SSS daily, during both bull and bear markets, as trade fees are collected from both buys and sells. Holding $SSS means earning money consistently!
+
+🎁 15% Referral Bonus: Earn extra by referring others. You get 15% of the trade fee for every referral, creating even better price action for $SSS!
+
+🚀 Join the Ecosystem: This bot is the first part of our developing ecosystem that will generate immense value for $SSS. Don’t miss out on the opportunity to be part of something big!
+
+🔗 Join our Telegram Community: Stay updated and be part of the growing $SSS family! Join: https://t.me/+JM5l3F7RdiRkNjI0 
+
+Once you have completed a transaction, please tap Menu > Start to perform a new function.
+
+Trade smart, earn big, and watch $SSS soar! 🌊🏄‍♂️\n\n`;
 
             await bot.sendMessage(msg.chat.id, content, {
                 parse_mode: "HTML",
