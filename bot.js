@@ -256,7 +256,7 @@ bot.on('callback_query', async (callbackQuery) => {
             async function getToken() {
                 let listenerReply;
 
-                let contentMessage = await bot.sendMessage(chatId, "Enter a token symbol or address to buy", {
+                let contentMessage = await bot.sendMessage(chatId, "Enter a Solana token symbol or address to buy, this is the contract address which you can find by typing the token name into websites such as coinmarket cap and coin gecko! Please only use official and verified sites.", {
                     "reply_markup": {
                         "force_reply": true
                     }
