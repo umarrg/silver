@@ -31,6 +31,7 @@ const commands = [
     { command: '/start', description: 'Open Control Panel' },
     { command: '/sell', description: 'Sell token' },
     { command: '/buy', description: 'Buy token' },
+    { command: '/wallet', description: 'View Wallet' },
     { command: '/positions', description: 'View detail information about your holdings' },
     { command: '/settings', description: 'Configure your settings' },
     { command: '/burn', description: 'Burn unwanted token to claim sol' },
@@ -104,6 +105,29 @@ Trade smart, earn big, and watch $SSS soar! 🌊🏄‍♂️\n\n`;
 });
 
 
+bot.onText(/\/wallet/, async (msg, match) => {
+    let chatID = msg.chat.id;
+    const user = await getUserById(chatID);
+    const wallets = await getWalletbyUser(user._id);
+
+    if (wallets && wallets.length > 0) {
+        let account = wallets[0].address;
+
+        try {
+            const solBalance = await getSolBalance(account);
+            const solPriceInUSD = await getSolPriceInUSD();
+            const balanceInUSD = (solBalance * solPriceInUSD).toFixed(2);
+
+            let content = `<b>Solana</b>\n<code>${account}</code> (Tap to copy)\nBalance: <code>${solBalance.toFixed(4)} SOL ($${balanceInUSD})</code>`;
+            bot.sendMessage(chatID, content, { parse_mode: 'HTML' });
+        } catch (error) {
+            console.error('Error fetching balance:', error);
+            bot.sendMessage(chatID, 'Sorry, there was an error fetching your balance. Please try again later.');
+        }
+    } else {
+        bot.sendMessage(chatID, 'No wallets found for this user. Please Genarate OR Import a Wallet');
+    }
+});
 bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
     helpCommand(bot, chatId);
