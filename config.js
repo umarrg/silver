@@ -28,11 +28,9 @@ async function getSolBalance(walletAddress) {
 async function getSolPriceInUSD() {
     const apiKey = process.env.COINGECKO_KEY;
     const config = {
-        headers: {
-            'x-cg-pro-api-key': `${apiKey}`
-        }
+
     };
-    const response = await axios.get('https://pro-api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd', config);
+    const response = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd', config);
     return response.data.solana.usd;
 }
 async function getTokenMarketData(token) {
@@ -69,9 +67,9 @@ async function getTokenMarketData(token) {
 async function getOnChainData(token) {
     const apiKey = process.env.COINGECKO_KEY;
     const config = {
-        headers: {
-            'x-cg-pro-api-key': `${apiKey}`
-        }
+        // headers: {
+        //     'x-cg-pro-api-key': `${apiKey}`
+        // }
     };
 
     // Function to check if the input is a valid Solana address
@@ -81,23 +79,24 @@ async function getOnChainData(token) {
 
     try {
         let url;
+
         if (isValidSolanaAddress(token)) {
-            url = `https://pro-api.coingecko.com/api/v3/onchain/networks/solana/tokens/${token}`;
+            url = `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${token}&vs_currencies=usd&include_market_cap=true`;
         } else {
             url = `https://pro-api.coingecko.com/api/v3/onchain/networks/solana/tokens?symbol=${token}`;
 
         }
 
         const response = await axios.get(url, config);
-        // console.log("pepe", response.data.data)
-        const res = response.data.data.attributes;
+        const res = response.data[token];
+        console.log(res)
 
         if (!res) {
             throw new Error('Token data not found');
         }
         const marketData = {
-            price: res.price_usd,
-            marketCap: res.fdv_usd,
+            price: res.usd,
+            marketCap: res.usd_market_cap,
             name: res.name,
             dailyChange: res.address
         };
