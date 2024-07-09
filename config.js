@@ -65,11 +65,10 @@ async function getTokenMarketData(token) {
     }
 }
 async function getOnChainData(token) {
-    const apiKey = process.env.COINGECKO_KEY;
     const config = {
-        // headers: {
-        //     'x-cg-pro-api-key': `${apiKey}`
-        // }
+        headers: {
+            'token': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOjE3MTcxNDExOTQzMjksImVtYWlsIjoiZGV2ZWxvcG1lbnRAc2lsdmVyc29sYW5hLnN1cmYiLCJhY3Rpb24iOiJ0b2tlbi1hcGkiLCJpYXQiOjE3MTcxNDExOTR9.qS2APUlNxvAdrX6Vwskm1i_9QDjsuUDAjeskMIzJsKo`
+        }
     };
 
     // Function to check if the input is a valid Solana address
@@ -81,24 +80,24 @@ async function getOnChainData(token) {
         let url;
 
         if (isValidSolanaAddress(token)) {
-            url = `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${token}&vs_currencies=usd&include_market_cap=true`;
+            url = `https://pro-api.solscan.io/v1.0/market/token/${token}?limit=10&offset=0`;
         } else {
             url = `https://pro-api.coingecko.com/api/v3/onchain/networks/solana/tokens?symbol=${token}`;
 
         }
 
         const response = await axios.get(url, config);
-        const res = response.data[token];
+        const res = response.data;
         console.log(res)
 
         if (!res) {
             throw new Error('Token data not found');
         }
         const marketData = {
-            price: res.usd,
-            marketCap: res.usd_market_cap,
-            name: res.name,
-            dailyChange: res.address
+            price: res.priceUsdt,
+            marketCap: res.markets[0].volume24h,
+            name: res.markets[0].name,
+
         };
         return marketData;
     } catch (error) {

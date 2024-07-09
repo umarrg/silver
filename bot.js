@@ -296,7 +296,7 @@ bot.on('callback_query', async (callbackQuery) => {
                         if (tokenData.address) {
 
                             const { price, marketCap, dailyVolume, dailyChange } = await getOnChainData(tokenData.address);
-                            if (price) {
+                            if (marketCap) {
                                 myObj['price'] = price;
                                 myObj['symbol'] = tokenData.symbol;
                                 myObj['marketCap'] = marketCap;
