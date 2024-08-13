@@ -66,12 +66,9 @@ async function getTokenMarketData(token) {
 }
 async function getOnChainData(token) {
     const config = {
-        headers: {
-            'token': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOjE3MTcxNDExOTQzMjksImVtYWlsIjoiZGV2ZWxvcG1lbnRAc2lsdmVyc29sYW5hLnN1cmYiLCJhY3Rpb24iOiJ0b2tlbi1hcGkiLCJpYXQiOjE3MTcxNDExOTR9.qS2APUlNxvAdrX6Vwskm1i_9QDjsuUDAjeskMIzJsKo`
-        }
+
     };
 
-    // Function to check if the input is a valid Solana address
     const isValidSolanaAddress = (token) => {
         return /^([A-HJ-NP-Za-km-z1-9]{32,44})$/.test(token);
     };
@@ -107,12 +104,25 @@ async function getOnChainData(token) {
 }
 
 
+async function getChainData(contractAddress) {
+    const url = `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${contractAddress}&vs_currencies=usd`;
 
+    try {
+        const response = await axios.get(url);
+        console.log(response)
+        const data = response.data;
+        return data[contractAddress]?.usd || null;
+    } catch (error) {
+        console.error('Error fetching token price:', error);
+        return null;
+    }
+}
 module.exports = {
     generateWallet,
     getSolPriceInUSD,
     getSolBalance,
     importWallet,
     getTokenMarketData,
-    getOnChainData
+    getOnChainData,
+    getChainData
 };

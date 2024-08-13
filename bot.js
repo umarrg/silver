@@ -8,7 +8,7 @@ const web3 = require('@solana/web3.js');
 app.use(express.urlencoded({ extended: true, }));
 app.use(cors());
 require("./connections/connection.mongo")();
-const { generateWallet, importWallet, getSolBalance, getSolPriceInUSD, getTokenMarketData, getOnChainData } = require('./config');
+const { generateWallet, importWallet, getSolBalance, getSolPriceInUSD, getTokenMarketData, getOnChainData, getChainData } = require('./config');
 const { getUserById, addNewUser, getAllUsers } = require('./dao/user');
 const { addNewWallet, getWalletbyUser, getAllUserWallet } = require('./dao/wallet');
 const { default: axios } = require('axios');
@@ -295,11 +295,12 @@ bot.on('callback_query', async (callbackQuery) => {
 
                         if (tokenData.address) {
 
-                            const { price, marketCap, dailyVolume, dailyChange } = await getOnChainData(tokenData.address);
-                            if (marketCap) {
+                            const price = await getChainData(tokenData.address);
+                            console.log("??", price)
+                            if (tokenData.address) {
                                 myObj['price'] = price;
                                 myObj['symbol'] = tokenData.symbol;
-                                myObj['marketCap'] = marketCap;
+                                myObj['marketCap'] = "";
                                 myObj['name'] = tokenData.name;
                                 // const { priceUsd, name, address, symbol, marketCapUsd, liquidityUsd, } = coinGeckoData;
                                 const wallets = await getWalletbyUser(user._id);
@@ -308,7 +309,7 @@ bot.on('callback_query', async (callbackQuery) => {
                                 const solBalance = await getSolBalance(account);
                                 const solPriceInUSD = await getSolPriceInUSD();
                                 const balanceInUSD = (solBalance * solPriceInUSD).toFixed(2);
-                                let content = `Buy <a href='{symbol}'><b>${tokenData.symbol}</b></a> — (${tokenData.name}) 📈\n<code>${tokenData.address}</code>\n\nBalance: ░░░░░░\nPrice: <b>$${price}</b>> — MC: <b>$${marketCap}</b>`
+                                let content = `Buy <a href='{symbol}'><b>${tokenData.symbol}</b></a> — (${tokenData.name}) 📈\n<code>${tokenData.address}</code>\n\nBalance: ░░░░░░\nPrice: <b>$${price}</b>> `
                                 sentMessage = await bot.sendMessage(chatId,
                                     content,
 
@@ -374,17 +375,17 @@ bot.on('callback_query', async (callbackQuery) => {
 
                 userInput.token = "4V2Yvav9XF5gP4HmZBWwFDS6RFXeHydzMdr8DuqMKWLg";
                 myObj['token'] = "4V2Yvav9XF5gP4HmZBWwFDS6RFXeHydzMdr8DuqMKWLg";
-                const tokenData = await getTokenData("4V2Yvav9XF5gP4HmZBWwFDS6RFXeHydzMdr8DuqMKWLg");
+                const tokenData = await await getTokenData("4V2Yvav9XF5gP4HmZBWwFDS6RFXeHydzMdr8DuqMKWLg");
 
                 if (tokenData) {
 
                     if (tokenData.address) {
 
-                        const { price, marketCap, dailyVolume, dailyChange } = await getOnChainData(tokenData.address);
-                        if (price) {
+                        const price = await getChainData(tokenData.address);
+                        if (tokenData.address) {
                             myObj['price'] = price;
                             myObj['symbol'] = tokenData.symbol;
-                            myObj['marketCap'] = marketCap;
+                            myObj['marketCap'] = "";
                             myObj['name'] = tokenData.name;
                             // const { priceUsd, name, address, symbol, marketCapUsd, liquidityUsd, } = coinGeckoData;
                             const wallets = await getWalletbyUser(user._id);
@@ -393,7 +394,7 @@ bot.on('callback_query', async (callbackQuery) => {
                             const solBalance = await getSolBalance(account);
                             const solPriceInUSD = await getSolPriceInUSD();
                             const balanceInUSD = (solBalance * solPriceInUSD).toFixed(2);
-                            let content = `Buy <a href='{symbol}'><b>${tokenData.symbol}</b></a> — (${tokenData.name}) 📈\n<code>${tokenData.address}</code>\n\nBalance: ░░░░░░\nPrice: <b>$${price}</b>> — MC: <b>$${marketCap}</b>`
+                            let content = `Buy <a href='{symbol}'><b>${tokenData.symbol}</b></a> — (${tokenData.name}) 📈\n<code>${tokenData.address}</code>\n\nBalance: ░░░░░░\nPrice: <b>$${price}</b>>`
                             sentMessage = await bot.sendMessage(chatId,
                                 content,
 
@@ -1482,15 +1483,37 @@ async function handleInlineButtonClick(chatId, data) {
         }
     }
 }
+let tokenCache = null;
+let tokenIndex = null;
+
+async function fetchTokenData() {
+    if (!tokenCache) {
+        try {
+            const response = await axios.get('https://token.jup.ag/all');
+            tokenCache = response.data;
+
+            tokenIndex = new Map();
+            tokenCache.forEach(token => {
+                tokenIndex.set(token.symbol.toUpperCase(), token);
+                tokenIndex.set(token.address.toUpperCase(), token);
+            });
+        } catch (error) {
+            console.error('Error fetching token data:', error);
+        }
+    }
+}
+
 async function getTokenData(token) {
     try {
-        const capitalizedToken = token;
-        const response = await axios.get('https://token.jup.ag/all');
-        const tokens = response.data;
-        const tokenData = tokens.find(t => t.symbol === capitalizedToken.toUpperCase() || t.address === capitalizedToken || t.address === capitalizedToken.toUpperCase());
-        return tokenData;
+        if (!tokenCache) {
+            await fetchTokenData();
+        }
+
+        const capitalizedToken = token.toUpperCase();
+        const tokenData = tokenIndex.get(capitalizedToken);
+        return tokenData || null;
     } catch (error) {
-        console.error('Error fetching token data:', error);
+        console.error('Error retrieving token data:', error);
         return null;
     }
 }
